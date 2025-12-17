@@ -1,4 +1,5 @@
 'use client';
+
 import * as pdfjs from 'pdfjs-dist';
 
 // Set workerSrc to avoid issues with Next.js. Using a CDN is the easiest way.
