@@ -13,37 +13,42 @@ export default function PrivacyPolicyPage() {
 
           <h2>Introduction</h2>
           <p>
-            Welcome to GST File Automator. We are committed to protecting your privacy. This Privacy Policy explains how we handle your information when you use our tool. Our core principle is privacy-by-design, which means we are fundamentally built to protect your data.
+            Welcome to GST File Automator ("we", "our", "us"). We are committed to protecting your privacy. This Privacy Policy explains how we handle your information when you use our tool. Our core principle is privacy-by-design, which means our application is fundamentally built to protect your data by not collecting it in the first place.
           </p>
           
           <h2>The Information We Don't Collect</h2>
           <p>
-            This is the most important section of our Privacy Policy. We do NOT collect, store, or have access to:
+            This is the most important section of our Privacy Policy. We do NOT collect, store, transmit, or have access to:
           </p>
           <ul>
-            <li>Your PDF files.</li>
-            <li>Any financial data contained within your invoices.</li>
+            <li>Your PDF files or their contents.</li>
+            <li>Any financial or personal data contained within your invoices.</li>
             <li>Any personally identifiable information (PII) extracted from your invoices.</li>
           </ul>
           <p>
-            All processing of your PDF files happens entirely on your own computer, within your web browser. Your files are never uploaded to our servers or any third-party server.
+            <strong>All processing of your PDF files happens entirely on your own computer, within your web browser.</strong> Your files are never uploaded to our servers or any third-party server.
           </p>
           
           <h2>How the Tool Works</h2>
           <ol>
-            <li><strong>File Processing:</strong> When you select a PDF file, it is read by your browser.</li>
-            <li><strong>Local Text Extraction:</strong> JavaScript running in your browser extracts the text content from the PDF. The file itself is not transmitted.</li>
-            <li><strong>AI Fallback (Anonymous Text):</strong> In cases where our standard, rule-based extractor fails, only the extracted, raw text is sent to a generative AI model for analysis. This text is processed anonymously and is not stored or logged in connection with any personal identifiers. The AI's purpose is solely to structure the data from the text you provide.</li>
+            <li><strong>File Processing:</strong> When you select a PDF file, your browser reads it directly from your computer. The file does not leave your machine.</li>
+            <li><strong>Local Text Extraction:</strong> JavaScript code running securely in your browser extracts the text content from the PDF. This process is entirely local.</li>
+            <li><strong>AI-Powered Fallback (Anonymous Text):</strong> In cases where our standard, rule-based extractor cannot read the invoice format, only the extracted raw text is sent to a generative AI model for analysis. This text is processed anonymously, is not stored or logged, and is not linked to you in any way. The AI's sole purpose is to structure the data from the text you provide. Your original file remains on your computer.</li>
           </ol>
           
           <h2>Data Security</h2>
           <p>
-            Since your files and the sensitive data within them are never sent to us, the security of your data remains in your control. The process is as secure as keeping the files on your own computer because that's where they stay.
+            Since your files and the sensitive data within them are never sent to us, the security of your data remains entirely in your control. The process is as secure as keeping the files on your own computer because that's where they stay.
           </p>
           
-          <h2>Cookies</h2>
+          <h2>Cookies and Local Storage</h2>
           <p>
-            We do not use cookies for tracking or advertising purposes. The application uses local storage only to maintain the state of your current session (e.g., the list of processed files), which is cleared when you close the tab.
+            We do not use cookies for tracking or advertising. The application uses your browser's local storage only to maintain the state of your current session (e.g., the list of processed files). This data is automatically cleared when you close your browser tab or use the "Clear All" button.
+          </p>
+
+          <h2>Third-Party Services</h2>
+          <p>
+            We use a generative AI service as a fallback for data extraction as described above. The text sent to this service is anonymous and is not associated with your identity. We do not use any analytics or advertising services.
           </p>
           
           <h2>Changes to This Privacy Policy</h2>
@@ -53,7 +58,7 @@ export default function PrivacyPolicyPage() {
           
           <h2>Contact Us</h2>
           <p>
-            If you have any questions about this Privacy Policy, you can contact us. However, please note that since we do not store any user data, we are unable to process requests for data access, correction, or deletion.
+            If you have any questions about this Privacy Policy, please feel free to contact us. However, please note that since we do not store any user data, we cannot process requests for data access, correction, or deletion.
           </p>
         </div>
       </main>
