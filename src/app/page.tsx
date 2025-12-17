@@ -7,7 +7,7 @@ import { extractAndValidateGstData } from '@/ai/flows/data-extraction-and-valida
 import { extractWithRules, calculateConfidence } from '@/lib/rule-based-extractor';
 import { useToast } from '@/hooks/use-toast';
 
-import { HeroSection } from '@/components/gst-automator/hero-section';
+import { HeroSection, HeroDescription } from '@/components/gst-automator/hero-section';
 import { UploadSection } from '@/components/gst-automator/upload-section';
 import { SummarySection } from '@/components/gst-automator/summary-section';
 import { ResultsTable } from '@/components/gst-automator/results-table';
@@ -230,14 +230,25 @@ export default function GstAutomatorPage() {
               {/* Left Ad Space */}
             </div>
 
-            <div className="lg:col-span-8 space-y-8">
+            <div className="lg:col-span-8 space-y-8 flex flex-col">
               <HeroSection />
-              <UploadSection
-                files={state.invoices}
-                onFilesAdded={handleFilesAdded}
-                onRemoveFile={handleRemoveFile}
-                onClearAll={handleClearAll}
-              />
+              <div className="lg:hidden">
+                <UploadSection
+                    files={state.invoices}
+                    onFilesAdded={handleFilesAdded}
+                    onRemoveFile={handleRemoveFile}
+                    onClearAll={handleClearAll}
+                />
+              </div>
+              <HeroDescription />
+               <div className="hidden lg:block">
+                <UploadSection
+                    files={state.invoices}
+                    onFilesAdded={handleFilesAdded}
+                    onRemoveFile={handleRemoveFile}
+                    onClearAll={handleClearAll}
+                />
+              </div>
               {failedInvoices.length > 0 && (
                  <Card className="border-destructive/50">
                     <CardHeader>
