@@ -15,7 +15,6 @@
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
-import crypto from 'crypto';
 
 const DetectDuplicateInvoiceInputSchema = z.object({
   pdfContent: z.string().describe('The content of the PDF invoice.'),
@@ -46,13 +45,14 @@ const detectDuplicateInvoiceFlow = ai.defineFlow(
     outputSchema: DetectDuplicateInvoiceOutputSchema,
   },
   async input => {
-    const hash = crypto
-      .createHash('sha256')
-      .update(input.pdfContent)
-      .digest('hex');
+    const encoder = new TextEncoder();
+    const data = encoder.encode(input.pdfContent);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    
+    const isDuplicate = input.existingInvoiceHashes.includes(hashHex);
 
-    const isDuplicate = input.existingInvoiceHashes.includes(hash);
-
-    return {isDuplicate, hash};
+    return {isDuplicate, hash: hashHex};
   }
 );
