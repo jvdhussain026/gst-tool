@@ -34,6 +34,7 @@ const AISchema = z.object({
   sgstAmount: z.number().describe('The State GST amount.'),
   igstAmount: z.number().describe('The Integrated GST amount.'),
   totalInvoiceValue: z.number().describe('The total value of the invoice.'),
+  hash: z.string().optional().describe('The SHA256 hash of the invoice content (passed through).'),
 });
 export type AIData = z.infer<typeof AISchema>;
 
