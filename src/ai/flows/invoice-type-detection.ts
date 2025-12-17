@@ -31,7 +31,6 @@ export async function detectInvoiceType(input: DetectInvoiceTypeInput): Promise<
 
 const prompt = ai.definePrompt({
   name: 'detectInvoiceTypePrompt',
-  model: 'googleai/gemini-2.5-flash',
   input: {schema: DetectInvoiceTypeInputSchema},
   output: {schema: DetectInvoiceTypeOutputSchema},
   prompt: `You are an expert in analyzing GST invoices and determining their type based on their content.\
@@ -52,6 +51,7 @@ const detectInvoiceTypeFlow = ai.defineFlow(
     name: 'detectInvoiceTypeFlow',
     inputSchema: DetectInvoiceTypeInputSchema,
     outputSchema: DetectInvoiceTypeOutputSchema,
+    model: 'googleai/gemini-2.5-flash',
   },
   async input => {
     const {output} = await prompt(input);

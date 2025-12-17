@@ -44,15 +44,15 @@ const detectDuplicateInvoiceFlow = ai.defineFlow(
     inputSchema: DetectDuplicateInvoiceInputSchema,
     outputSchema: DetectDuplicateInvoiceOutputSchema,
   },
-  async input => {
+  async ({ pdfContent, existingInvoiceHashes }) => {
     const encoder = new TextEncoder();
-    const data = encoder.encode(input.pdfContent);
+    const data = encoder.encode(pdfContent);
     const hashBuffer = await crypto.subtle.digest('SHA-256', data);
     const hashArray = Array.from(new Uint8Array(hashBuffer));
     const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
     
-    const isDuplicate = input.existingInvoiceHashes.includes(hashHex);
+    const isDuplicate = existingInvoiceHashes.includes(hashHex);
 
-    return {isDuplicate, hash: hashHex};
+    return { isDuplicate, hash: hashHex };
   }
 );
