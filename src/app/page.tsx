@@ -225,8 +225,7 @@ export default function GstAutomatorPage() {
     <div className="flex flex-col min-h-screen">
       <main className="flex-grow">
         <div className="container mx-auto px-4 py-8 md:py-12">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-            <div className="lg:col-span-8 space-y-8">
+          <div className="space-y-8">
               <HeroSection />
               <UploadSection
                 files={state.invoices}
@@ -250,21 +249,6 @@ export default function GstAutomatorPage() {
                   <ResultsTable invoices={successfulInvoices.map(i => i.data)} />
                 </>
               )}
-            </div>
-            <aside className="hidden lg:block lg:col-span-4 space-y-6">
-                <Card className="h-96 flex items-center justify-center text-muted-foreground border-dashed">
-                    <div className='text-center'>
-                        <p className="text-sm">Ad Space</p>
-                        <p className='text-xs'>Supports the free tool</p>
-                    </div>
-                </Card>
-                 <Card className="h-96 flex items-center justify-center text-muted-foreground border-dashed">
-                    <div className='text-center'>
-                        <p className="text-sm">Ad Space</p>
-                        <p className='text-xs'>Supports the free tool</p>
-                    </div>
-                </Card>
-            </aside>
           </div>
         </div>
       </main>
