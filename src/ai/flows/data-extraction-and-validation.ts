@@ -47,6 +47,7 @@ export async function extractAndValidateGstData(
 
 const prompt = ai.definePrompt({
   name: 'extractAndValidateGstDataPrompt',
+  model: 'googleai/gemini-2.5-flash',
   input: {schema: ExtractAndValidateGstDataInputSchema},
   output: {schema: ExtractAndValidateGstDataOutputSchema},
   prompt: `You are an expert AI assistant for extracting data from Indian GST invoices. Your goal is to extract key information from the given invoice text and return it in a structured JSON format. You must detect the invoice type (Service or Spares) based on the content.
