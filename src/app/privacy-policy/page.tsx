@@ -1,14 +1,11 @@
 import { Footer } from "@/components/gst-automator/footer";
+import { Header } from "@/components/gst-automator/header";
 import Link from "next/link";
 
 export default function PrivacyPolicyPage() {
   return (
     <div className="flex flex-col min-h-screen">
-      <header className="py-4 border-b">
-        <div className="container mx-auto px-4">
-          <Link href="/" className="text-2xl font-bold">GST File Automator</Link>
-        </div>
-      </header>
+      <Header />
       <main className="flex-grow container mx-auto px-4 py-12">
         <div className="max-w-4xl mx-auto prose prose-neutral dark:prose-invert">
           <h1>Privacy Policy</h1>

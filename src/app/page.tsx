@@ -7,6 +7,7 @@ import { extractAndValidateGstData } from '@/ai/flows/data-extraction-and-valida
 import { extractWithRules, calculateConfidence } from '@/lib/rule-based-extractor';
 import { useToast } from '@/hooks/use-toast';
 
+import { Header } from '@/components/gst-automator/header';
 import { HeroSection, HeroDescription } from '@/components/gst-automator/hero-section';
 import { UploadSection } from '@/components/gst-automator/upload-section';
 import { SummarySection } from '@/components/gst-automator/summary-section';
@@ -223,6 +224,7 @@ export default function GstAutomatorPage() {
 
   return (
     <div className="flex flex-col min-h-screen">
+      <Header />
       <main className="flex-grow">
         <div className="container mx-auto px-4 py-8 md:py-12">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
