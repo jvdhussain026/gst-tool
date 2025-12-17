@@ -14,7 +14,7 @@ import { ResultsTable } from '@/components/gst-automator/results-table';
 import { Footer } from '@/components/gst-automator/footer';
 import { DuplicateInvoiceDialog } from '@/components/gst-automator/duplicate-invoice-dialog';
 import { HowItWorksSection } from '@/components/gst-automator/how-it-works-section';
-import { Card, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 
 type State = {
   invoices: InvoiceFile[];
@@ -242,10 +242,12 @@ export default function GstAutomatorPage() {
                  <Card className="border-destructive/50">
                     <CardHeader>
                         <CardTitle className="text-destructive text-lg">Processing Issues</CardTitle>
-                        <p className="text-sm text-destructive/80">
-                            {failedInvoices.length} invoice(s) could not be processed and were skipped. This can happen with scanned images or unusual formats.
-                        </p>
                     </CardHeader>
+                    <CardContent>
+                        <p className="text-sm text-destructive/90">
+                            {failedInvoices.length} invoice(s) could not be processed and were skipped. This can happen with scanned images, password-protected files, or unusual formats.
+                        </p>
+                    </CardContent>
                 </Card>
               )}
               {successfulInvoices.length > 0 && (
