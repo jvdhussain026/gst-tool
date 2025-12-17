@@ -13,7 +13,7 @@ import { SummarySection } from '@/components/gst-automator/summary-section';
 import { ResultsTable } from '@/components/gst-automator/results-table';
 import { Footer } from '@/components/gst-automator/footer';
 import { DuplicateInvoiceDialog } from '@/components/gst-automator/duplicate-invoice-dialog';
-import { Card } from '@/components/ui/card';
+import { Card, CardHeader, CardTitle } from '@/components/ui/card';
 
 type State = {
   invoices: InvoiceFile[];
