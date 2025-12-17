@@ -13,6 +13,7 @@ import { SummarySection } from '@/components/gst-automator/summary-section';
 import { ResultsTable } from '@/components/gst-automator/results-table';
 import { Footer } from '@/components/gst-automator/footer';
 import { DuplicateInvoiceDialog } from '@/components/gst-automator/duplicate-invoice-dialog';
+import { HowItWorksSection } from '@/components/gst-automator/how-it-works-section';
 import { Card, CardHeader, CardTitle } from '@/components/ui/card';
 
 type State = {
@@ -153,11 +154,10 @@ export default function GstAutomatorPage() {
         dispatch({ type: 'SET_PROGRESS', id: invoiceFile.id, progress: 80 });
         const aiData = await extractAndValidateGstData({ 
           invoiceText: textContent,
-          ruleBasedData: extractedData // Pass rule-based data to AI for refinement
+          ruleBasedData: extractedData,
          });
 
         // The AI schema is different, we need to map it to our target schema.
-        // This is a simplified mapping.
         extractedData = {
           date: aiData.invoiceDate,
           gstNo: aiData.vendorGstin,
@@ -254,6 +254,7 @@ export default function GstAutomatorPage() {
                   <ResultsTable invoices={successfulInvoices.map(i => i.data)} />
                 </>
               )}
+              <HowItWorksSection />
             </div>
 
             <div className="hidden lg:block lg:col-span-2">
