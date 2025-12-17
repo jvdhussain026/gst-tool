@@ -28,6 +28,7 @@ export type DetectDuplicateInvoiceInput = z.infer<typeof DetectDuplicateInvoiceI
 
 const DetectDuplicateInvoiceOutputSchema = z.object({
   isDuplicate: z.boolean().describe('Whether the invoice is a duplicate.'),
+  hash: z.string().describe('The SHA256 hash of the invoice content.'),
 });
 
 export type DetectDuplicateInvoiceOutput = z.infer<typeof DetectDuplicateInvoiceOutputSchema>;
@@ -52,6 +53,6 @@ const detectDuplicateInvoiceFlow = ai.defineFlow(
 
     const isDuplicate = input.existingInvoiceHashes.includes(hash);
 
-    return {isDuplicate};
+    return {isDuplicate, hash};
   }
 );
