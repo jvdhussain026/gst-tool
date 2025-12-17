@@ -225,7 +225,12 @@ export default function GstAutomatorPage() {
     <div className="flex flex-col min-h-screen">
       <main className="flex-grow">
         <div className="container mx-auto px-4 py-8 md:py-12">
-          <div className="space-y-8">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            <div className="hidden lg:block lg:col-span-2">
+              {/* Left Ad Space */}
+            </div>
+
+            <div className="lg:col-span-8 space-y-8">
               <HeroSection />
               <UploadSection
                 files={state.invoices}
@@ -249,6 +254,11 @@ export default function GstAutomatorPage() {
                   <ResultsTable invoices={successfulInvoices.map(i => i.data)} />
                 </>
               )}
+            </div>
+
+            <div className="hidden lg:block lg:col-span-2">
+              {/* Right Ad Space */}
+            </div>
           </div>
         </div>
       </main>
