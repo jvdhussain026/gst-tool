@@ -1,12 +1,12 @@
 'use client';
 
-import * as pdfjs from 'pdfjs-dist';
-
-// Set workerSrc to avoid issues with Next.js. Using a CDN is the easiest way.
-// Use a specific version for stability.
-pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.mjs`;
-
 export async function extractTextFromPDF(file: File): Promise<string> {
+  // Dynamically import pdfjs-dist only on the client
+  const pdfjs = await import('pdfjs-dist');
+  
+  // Use a specific version for stability.
+  pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.mjs`;
+
   const arrayBuffer = await file.arrayBuffer();
   const loadingTask = pdfjs.getDocument(arrayBuffer);
   const pdf = await loadingTask.promise;
