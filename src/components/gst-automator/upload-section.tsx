@@ -35,7 +35,7 @@ export function UploadSection({ files, onFilesAdded, onRemoveFile, onClearAll }:
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Step 1: Upload Your Invoices</CardTitle>
+        <CardTitle className="font-headline text-2xl tracking-tight">Step 1: Upload Your Invoices</CardTitle>
       </CardHeader>
       <CardContent className="space-y-6">
         <div

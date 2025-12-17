@@ -3,7 +3,7 @@ import { Badge } from "@/components/ui/badge";
 export function HeroSection() {
   return (
     <section className="text-center">
-      <Badge variant="outline" className="mb-4 text-accent border-accent">100% Free & Privacy-First</Badge>
+      <Badge variant="outline" className="mb-4 text-primary border-primary/50">100% Free & Privacy-First</Badge>
       <h1 className="text-4xl md:text-5xl font-bold tracking-tight font-headline">
         Convert GST Invoice PDFs to Excel, Instantly.
       </h1>
