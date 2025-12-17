@@ -1,4 +1,4 @@
-import type {Metadata} from 'next';
+import type {Metadata, Viewport} from 'next';
 import './globals.css';
 import { Toaster } from "@/components/ui/toaster"
 import { cn } from '@/lib/utils';
@@ -7,7 +7,13 @@ export const metadata: Metadata = {
   title: 'GST File Automator | Convert GST Invoice PDF to Excel',
   description: 'Free online tool to automatically convert multiple GST invoice PDFs into a single, clean Excel file. Fast, accurate, and privacy-first. Built for Indian businesses.',
   keywords: ['GST invoice to Excel', 'PDF to GST Excel', 'GST automation tool', 'Free GST tools India', 'GST invoice converter'],
+  manifest: '/manifest.json',
 };
+
+export const viewport: Viewport = {
+  themeColor: '#FFFFFF',
+};
+
 
 export default function RootLayout({
   children,
