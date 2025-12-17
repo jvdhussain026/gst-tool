@@ -88,7 +88,6 @@ const extractAndValidateGstDataFlow = ai.defineFlow(
     name: 'extractAndValidateGstDataFlow',
     inputSchema: ExtractAndValidateGstDataInputSchema,
     outputSchema: ExtractAndValidateGstDataOutputSchema,
-    model: 'googleai/gemini-2.5-flash',
   },
   async input => {
     const {output} = await prompt(input);

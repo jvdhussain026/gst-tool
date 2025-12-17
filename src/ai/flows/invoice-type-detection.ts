@@ -51,7 +51,6 @@ const detectInvoiceTypeFlow = ai.defineFlow(
     name: 'detectInvoiceTypeFlow',
     inputSchema: DetectInvoiceTypeInputSchema,
     outputSchema: DetectInvoiceTypeOutputSchema,
-    model: 'googleai/gemini-2.5-flash',
   },
   async input => {
     const {output} = await prompt(input);
