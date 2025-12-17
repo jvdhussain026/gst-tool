@@ -1,1 +1,6 @@
-// Flows will be imported for their side effects in this file.
+import { config } from 'dotenv';
+config();
+
+import '@/ai/flows/invoice-type-detection.ts';
+import '@/ai/flows/data-extraction-and-validation.ts';
+import '@/ai/flows/duplicate-invoice-detection.ts';
