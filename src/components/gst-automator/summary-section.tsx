@@ -36,11 +36,11 @@ export function SummarySection({ invoices }: SummarySectionProps) {
     return invoices.reduce(
       (acc, invoice) => {
         acc.totalInvoices += 1;
-        acc.totalTaxableAmount += invoice.taxableAmount;
-        acc.totalCgst += invoice.cgstAmount;
-        acc.totalSgst += invoice.sgstAmount;
-        acc.totalIgst += invoice.igstAmount;
-        acc.totalInvoiceValue += invoice.totalInvoiceValue;
+        acc.totalTaxableAmount += invoice.taxableValue;
+        acc.totalCgst += invoice.cgst9;
+        acc.totalSgst += invoice.sgst9;
+        acc.totalIgst += (invoice.igst18 + invoice.igst28);
+        acc.totalInvoiceValue += invoice.totalBillValue;
         return acc;
       },
       {

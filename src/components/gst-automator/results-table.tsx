@@ -44,44 +44,39 @@ export function ResultsTable({ invoices }: ResultsTableProps) {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Inv. Type</TableHead>
-                <TableHead>Inv. Number</TableHead>
-                <TableHead>Inv. Date</TableHead>
-                <TableHead>Vendor</TableHead>
-                <TableHead>Vendor GSTIN</TableHead>
-                <TableHead className="text-right">Taxable Amt.</TableHead>
-                <TableHead className="text-right">CGST</TableHead>
-                <TableHead className="text-right">SGST</TableHead>
-                <TableHead className="text-right">IGST</TableHead>
-                <TableHead className="text-right">Total Tax</TableHead>
-                <TableHead className="text-right">Total Value</TableHead>
-                <TableHead className="text-center">Valid</TableHead>
+                <TableHead>Date</TableHead>
+                <TableHead>GST No.</TableHead>
+                <TableHead>Bill No.</TableHead>
+                <TableHead>Type</TableHead>
+                <TableHead>HSN</TableHead>
+                <TableHead>QTY</TableHead>
+                <TableHead className="text-right">Taxable Value</TableHead>
+                <TableHead className="text-right">IGST @18%</TableHead>
+                <TableHead className="text-right">IGST @28%</TableHead>
+                <TableHead className="text-right">CGST @9%</TableHead>
+                <TableHead className="text-right">SGST @9%</TableHead>
+                <TableHead className="text-right">Total Bill Value</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {invoices.map((invoice, index) => (
-                <TableRow key={`${invoice.invoiceNumber}-${index}`}>
+                <TableRow key={`${invoice.billNo}-${index}`}>
+                  <TableCell>{invoice.date}</TableCell>
+                  <TableCell className="font-mono text-xs">{invoice.gstNo}</TableCell>
+                  <TableCell className="font-medium">{invoice.billNo}</TableCell>
                   <TableCell>
-                    <Badge variant={invoice.invoiceType === 'Service' ? 'secondary' : 'outline'}>
-                      {invoice.invoiceType}
+                    <Badge variant={invoice.saleOrServices === 'Services' ? 'secondary' : 'outline'}>
+                      {invoice.saleOrServices}
                     </Badge>
                   </TableCell>
-                  <TableCell className="font-medium">{invoice.invoiceNumber}</TableCell>
-                  <TableCell>{invoice.invoiceDate}</TableCell>
-                  <TableCell>{invoice.vendorName}</TableCell>
-                  <TableCell className="font-mono text-xs">{invoice.vendorGstin}</TableCell>
-                  <TableCell className="text-right">{formatCurrency(invoice.taxableAmount)}</TableCell>
-                  <TableCell className="text-right">{formatCurrency(invoice.cgstAmount)}</TableCell>
-                  <TableCell className="text-right">{formatCurrency(invoice.sgstAmount)}</TableCell>
-                  <TableCell className="text-right">{formatCurrency(invoice.igstAmount)}</TableCell>
-                  <TableCell className="text-right font-semibold">{formatCurrency(invoice.totalTax)}</TableCell>
-                  <TableCell className="text-right font-bold">{formatCurrency(invoice.totalInvoiceValue)}</TableCell>
-                  <TableCell className="text-center">
-                    {invoice.isValid ? 
-                        <Icons.check className="h-5 w-5 text-green-500 mx-auto" /> : 
-                        <Icons.warning className="h-5 w-5 text-yellow-500 mx-auto" />
-                    }
-                  </TableCell>
+                  <TableCell>{invoice.hsn}</TableCell>
+                  <TableCell>{invoice.qty}</TableCell>
+                  <TableCell className="text-right">{formatCurrency(invoice.taxableValue)}</TableCell>
+                  <TableCell className="text-right">{formatCurrency(invoice.igst18)}</TableCell>
+                  <TableCell className="text-right">{formatCurrency(invoice.igst28)}</TableCell>
+                  <TableCell className="text-right">{formatCurrency(invoice.cgst9)}</TableCell>
+                  <TableCell className="text-right">{formatCurrency(invoice.sgst9)}</TableCell>
+                  <TableCell className="text-right font-bold">{formatCurrency(invoice.totalBillValue)}</TableCell>
                 </TableRow>
               ))}
             </TableBody>

@@ -1,7 +1,7 @@
 'use server';
 
 /**
- * @fileOverview Extracts and validates GST data from invoice PDFs.
+ * @fileOverview Extracts and validates GST data from invoice PDFs, used as a fallback.
  *
  * - extractAndValidateGstData - A function that handles the extraction and validation of GST data.
  * - ExtractAndValidateGstDataInput - The input type for the extractAndValidateGstData function.
@@ -10,76 +10,63 @@
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
+import { InvoiceData } from '@/lib/types';
+
 
 const ExtractAndValidateGstDataInputSchema = z.object({
   invoiceText: z.string().describe('The text content extracted from the invoice PDF.'),
+  ruleBasedData: z.any().optional().describe('Partially extracted data from the rule-based system to be corrected or completed.'),
 });
 export type ExtractAndValidateGstDataInput = z.infer<typeof ExtractAndValidateGstDataInputSchema>;
 
-const ExtractAndValidateGstDataOutputSchema = z.object({
+// This schema is based on the OLD schema, as it's what the AI was trained on.
+// The main page will map this output to the new, stricter InvoiceData schema.
+const AISchema = z.object({
   invoiceType: z
     .enum(['Service', 'Spares'])
     .describe('The type of invoice (Service or Spares).'),
-  referenceNumber: z.string().optional().describe('The reference or CRM number of the invoice.'),
-  invoiceDate: z.string().describe('The date of the invoice (normalized format).'),
+  invoiceDate: z.string().describe('The date of the invoice (normalized to YYYY-MM-DD).'),
   invoiceNumber: z.string().describe('The invoice number.'),
   vendorName: z.string().describe('The name of the vendor.'),
   vendorGstin: z.string().describe('The GSTIN of the vendor.'),
-  customerGstin: z.string().optional().describe('The GSTIN of the customer.'),
-  state: z.string().describe('The state to which the GST applies.'),
   taxableAmount: z.number().describe('The total taxable amount of the invoice.'),
   cgstAmount: z.number().describe('The Central GST amount.'),
   sgstAmount: z.number().describe('The State GST amount.'),
   igstAmount: z.number().describe('The Integrated GST amount.'),
-  totalTax: z.number().describe('The total tax amount (CGST + SGST + IGST).'),
   totalInvoiceValue: z.number().describe('The total value of the invoice.'),
-  isValid: z
-    .boolean()
-    .describe('Whether the invoice is valid based on total validation.'),
 });
-export type ExtractAndValidateGstDataOutput = z.infer<typeof ExtractAndValidateGstDataOutputSchema>;
+export type AIData = z.infer<typeof AISchema>;
 
 export async function extractAndValidateGstData(
   input: ExtractAndValidateGstDataInput
-): Promise<ExtractAndValidateGstDataOutput> {
+): Promise<AIData> {
   return extractAndValidateGstDataFlow(input);
 }
 
 const prompt = ai.definePrompt({
   name: 'extractAndValidateGstDataPrompt',
   input: {schema: ExtractAndValidateGstDataInputSchema},
-  output: {schema: ExtractAndValidateGstDataOutputSchema},
-  prompt: `You are an expert AI assistant for extracting data from Indian GST invoices. Your goal is to extract key information from the given invoice text and return it in a structured JSON format. You must detect the invoice type (Service or Spares) based on the content.
+  output: {schema: AISchema},
+  prompt: `You are an AI assistant for correcting and completing extracted data from an Indian GST invoice.
+A rule-based system has already attempted to extract the data, but its confidence was low.
+Your task is to analyze the raw invoice text and the partial data to return a corrected and complete JSON object.
 
-Here's the invoice text:
+Here is the full invoice text:
 {{{invoiceText}}}
 
+Here is the partial data extracted by the rule-based system:
+{{{json ruleBasedData}}}
+
+Please focus on filling in missing fields and correcting obvious errors based on the full text.
 Follow these rules:
+1.  **Prioritize the Raw Text**: The invoice text is the source of truth.
+2.  **Fill Missing Fields**: Identify and fill any fields that the rule-based system missed (e.g., if total is 0).
+3.  **Correct Errors**: If the rule-based system extracted something incorrectly (e.g., mistook a phone number for an invoice number), correct it.
+4.  **Validate Totals**: Ensure that Taxable Amount + CGST + SGST + IGST equals the Total Invoice Value.
+5.  **Output Format**: Return only a valid JSON object matching the requested schema. Do not add any commentary.
 
-1.  **Invoice Type Detection**: Automatically determine if the invoice is a 'Service' or 'Spares' invoice based on keywords and content.  Spares invoices typically contain multiple HSN codes and part descriptions, while Service invoices have service and labor charges.
-2.  **Data Extraction**: Extract the following fields:
-    *   Invoice Type (Service / Spares)
-    *   Reference / CRM Number (if available)
-    *   Invoice Date (normalize to YYYY-MM-DD format)
-    *   Invoice Number
-    *   Vendor Name
-    *   Vendor GSTIN
-    *   Customer GSTIN (if available)
-    *   State
-    *   Taxable Amount
-    *   CGST Amount
-    *   SGST Amount
-    *   IGST Amount
-    *   Total Tax
-    *   Total Invoice Value
-3.  **Validation**: Validate that Taxable Amount + CGST + SGST + IGST = Total Invoice Value. Set isValid to true if the validation passes, otherwise false.
-4.  **Exclusion**: Exclude disclaimers, legal text, e-signature notes, SR phone numbers, personal phone numbers, internal audit text, and non-financial descriptions. Only extract financial and GST-relevant data.
-5.  **Normalization**: Normalize dates to YYYY-MM-DD format and ensure decimal numbers are correctly formatted.
-
-Return the output as a JSON object matching the ExtractAndValidateGstDataOutputSchema.  If a field is not found, and is optional, leave it blank.
-
-Here is the output schema:
-{{json schema=ExtractAndValidateGstDataOutputSchema}}
+Return the final, corrected data as a JSON object matching this schema:
+{{json schema=AISchema}}
 `,
 });
 
@@ -87,7 +74,7 @@ const extractAndValidateGstDataFlow = ai.defineFlow(
   {
     name: 'extractAndValidateGstDataFlow',
     inputSchema: ExtractAndValidateGstDataInputSchema,
-    outputSchema: ExtractAndValidateGstDataOutputSchema,
+    outputSchema: AISchema,
   },
   async input => {
     const {output} = await prompt(input);

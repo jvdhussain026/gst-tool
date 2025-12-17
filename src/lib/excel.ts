@@ -1,28 +1,28 @@
 import * as xlsx from 'xlsx';
 import type { InvoiceData } from './types';
 
-export function exportToExcel(invoices: InvoiceData[], fileName: string = 'gst_invoices.xlsx') {
+export function exportToExcel(invoices: InvoiceData[], fileName: string = 'gst_summary.xlsx') {
   if (invoices.length === 0) {
     console.warn("No data to export.");
     return;
   }
 
+  // The order of keys here is critical and must match the required schema.
   const dataForSheet = invoices.map(invoice => ({
-    'Invoice Type': invoice.invoiceType,
-    'Reference / CRM Number': invoice.referenceNumber || 'N/A',
-    'Invoice Date': invoice.invoiceDate,
-    'Invoice Number': invoice.invoiceNumber,
-    'Vendor Name': invoice.vendorName,
-    'Vendor GSTIN': invoice.vendorGstin,
-    'Customer GSTIN': invoice.customerGstin || 'N/A',
-    'State': invoice.state,
-    'Taxable Amount': invoice.taxableAmount,
-    'CGST Amount': invoice.cgstAmount,
-    'SGST Amount': invoice.sgstAmount,
-    'IGST Amount': invoice.igstAmount,
-    'Total Tax': invoice.totalTax,
-    'Total Invoice Value': invoice.totalInvoiceValue,
-    'Is Valid': invoice.isValid ? 'Yes' : 'No'
+    'Date': invoice.date,
+    'GST No.': invoice.gstNo,
+    'BILL': invoice.billNo,
+    'Sale / Services': invoice.saleOrServices,
+    'HSN': invoice.hsn,
+    'QTY': invoice.qty,
+    'Taxable Value': invoice.taxableValue,
+    'IGST 18%': invoice.igst18,
+    'IGST 28%': invoice.igst28,
+    'CGST %': invoice.cgstRate,
+    'SGST %': invoice.sgstRate,
+    'CGST 9%': invoice.cgst9,
+    'SGST 9%': invoice.sgst9,
+    'Total Bill Value': invoice.totalBillValue,
   }));
 
   const worksheet = xlsx.utils.json_to_sheet(dataForSheet);

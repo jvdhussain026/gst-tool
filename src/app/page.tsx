@@ -4,6 +4,7 @@ import React, { useCallback, useReducer, useMemo } from 'react';
 import type { InvoiceFile, InvoiceData } from '@/lib/types';
 import { getFileHash, extractTextFromPDF } from '@/lib/pdf';
 import { extractAndValidateGstData } from '@/ai/flows/data-extraction-and-validation';
+import { extractWithRules, calculateConfidence } from '@/lib/rule-based-extractor';
 import { useToast } from '@/hooks/use-toast';
 
 import { HeroSection } from '@/components/gst-automator/hero-section';
@@ -123,7 +124,7 @@ export default function GstAutomatorPage() {
     
     try {
       const hash = await getFileHash(invoiceFile.file);
-      dispatch({ type: 'SET_PROGRESS', id: invoiceFile.id, progress: 25 });
+      dispatch({ type: 'SET_PROGRESS', id: invoiceFile.id, progress: 20 });
 
       const existingHashes = state.invoices
         .filter(inv => inv.status === 'success' && inv.hash)
@@ -135,23 +136,47 @@ export default function GstAutomatorPage() {
       }
 
       const textContent = await extractTextFromPDF(invoiceFile.file);
-      dispatch({ type: 'SET_PROGRESS', id: invoiceFile.id, progress: 50 });
+      dispatch({ type: 'SET_PROGRESS', id: invoiceFile.id, progress: 40 });
 
       if (!textContent.trim()) {
         throw new Error('Could not extract text from PDF. The file might be empty or scanned.');
       }
       
-      const extractedData = await extractAndValidateGstData({ invoiceText: textContent });
-      dispatch({ type: 'SET_PROGRESS', id: invoiceFile.id, progress: 90 });
+      let extractedData = extractWithRules(textContent);
+      dispatch({ type: 'SET_PROGRESS', id: invoiceFile.id, progress: 70 });
+      
+      const confidence = calculateConfidence(extractedData);
 
-      if (!extractedData.isValid) {
-        toast({
-          variant: "destructive",
-          title: "Validation Warning",
-          description: `Invoice ${extractedData.invoiceNumber} has a validation mismatch. Please double check totals.`,
-        });
+      // If confidence is low, fallback to AI
+      if (confidence < 90) {
+        console.log(`Low confidence (${confidence}) for ${invoiceFile.file.name}, falling back to AI.`);
+        dispatch({ type: 'SET_PROGRESS', id: invoiceFile.id, progress: 80 });
+        const aiData = await extractAndValidateGstData({ 
+          invoiceText: textContent,
+          ruleBasedData: extractedData // Pass rule-based data to AI for refinement
+         });
+
+        // The AI schema is different, we need to map it to our target schema.
+        // This is a simplified mapping.
+        extractedData = {
+          date: aiData.invoiceDate,
+          gstNo: aiData.vendorGstin,
+          billNo: aiData.invoiceNumber,
+          saleOrServices: aiData.invoiceType === 'Spares' ? 'Sale' : 'Services',
+          hsn: 'N/A', // AI doesn't provide HSN in this schema
+          qty: 1, // Default
+          taxableValue: aiData.taxableAmount,
+          igst18: aiData.igstAmount > 0 ? aiData.igstAmount : 0,
+          igst28: 0,
+          cgstRate: aiData.cgstAmount > 0 ? 9 : 0,
+          sgstRate: aiData.sgstAmount > 0 ? 9 : 0,
+          cgst9: aiData.cgstAmount,
+          sgst9: aiData.sgstAmount,
+          totalBillValue: aiData.totalInvoiceValue,
+        };
       }
-
+      
+      dispatch({ type: 'SET_PROGRESS', id: invoiceFile.id, progress: 95 });
       dispatch({ type: 'SET_SUCCESS', id: invoiceFile.id, data: extractedData, textContent, hash });
 
     } catch (error) {
@@ -161,7 +186,7 @@ export default function GstAutomatorPage() {
       toast({
         variant: "destructive",
         title: `Error processing ${invoiceFile.file.name}`,
-        description: errorMessage,
+        description: `Could not process invoice. It was skipped. Error: ${errorMessage}`,
       });
     }
   }, [state.invoices, toast]);
@@ -192,6 +217,9 @@ export default function GstAutomatorPage() {
     () => state.invoices.filter((inv): inv is Required<InvoiceFile> => inv.status === 'success' && !!inv.data),
     [state.invoices]
   );
+  
+  const failedInvoices = useMemo(() => state.invoices.filter(inv => inv.status === 'error'), [state.invoices]);
+
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -206,6 +234,16 @@ export default function GstAutomatorPage() {
                 onRemoveFile={handleRemoveFile}
                 onClearAll={handleClearAll}
               />
+              {failedInvoices.length > 0 && (
+                 <Card className="border-destructive/50">
+                    <CardHeader>
+                        <CardTitle className="text-destructive text-lg">Processing Issues</CardTitle>
+                        <p className="text-sm text-destructive/80">
+                            {failedInvoices.length} invoice(s) could not be processed and were skipped. This can happen with scanned images or unusual formats.
+                        </p>
+                    </CardHeader>
+                </Card>
+              )}
               {successfulInvoices.length > 0 && (
                 <>
                   <SummarySection invoices={successfulInvoices.map(i => i.data)} />
