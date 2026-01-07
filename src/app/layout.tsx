@@ -2,6 +2,7 @@ import type {Metadata, Viewport} from 'next';
 import './globals.css';
 import { Toaster } from "@/components/ui/toaster"
 import { cn } from '@/lib/utils';
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 export const metadata: Metadata = {
   title: 'GST File Automator | Convert GST Invoice PDF to Excel',
@@ -36,6 +37,7 @@ export default function RootLayout({
         )}>
         {children}
         <Toaster />
+        <SpeedInsights />
       </body>
     </html>
   );
